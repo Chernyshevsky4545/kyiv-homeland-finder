@@ -137,8 +137,8 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 }
