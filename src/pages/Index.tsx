@@ -1,16 +1,30 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState, useMemo } from 'react';
+import { PropertyMap } from '@/components/PropertyMap';
+import { FilterSidebar } from '@/components/FilterSidebar';
+import { PropertyPanel } from '@/components/PropertyPanel';
+import { type ListingFilters } from '@/types/listing';
+import { getListings } from '@/data/listingsService';
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [filters, setFilters] = useState<ListingFilters>({});
+  const [selectedListingId, setSelectedListingId] = useState<number | null>(null);
+
+  const listings = useMemo(() => getListings(filters), [filters]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="flex h-screen w-full overflow-hidden bg-background">
+      <FilterSidebar filters={filters} setFilters={setFilters} totalResults={listings.length} />
+
+      <main className="flex-1 relative">
+        <PropertyMap
+          listings={listings}
+          onMarkerClick={(id) => setSelectedListingId(id)}
+          selectedId={selectedListingId}
+        />
+        <PropertyPanel listingId={selectedListingId} onClose={() => setSelectedListingId(null)} />
+      </main>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
