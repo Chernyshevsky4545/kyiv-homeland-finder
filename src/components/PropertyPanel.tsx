@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon } from 'lucide-react';
 import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon } from 'lucide-react';
 import { formatPrice, formatPriceUah } from '@/lib/format';
 import { Button } from './ui/button';
