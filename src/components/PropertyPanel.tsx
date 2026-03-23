@@ -21,14 +21,10 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
   const listing = listingId ? getListingById(listingId) : undefined;
 
   return (
-    <AnimatePresence>
+    <>
       {listingId && listing && (
-        <motion.div
-          initial={{ x: '100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: '100%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed top-4 bottom-4 right-4 w-[400px] max-w-[calc(100vw-32px)] bg-card rounded-3xl shadow-2xl border border-border/50 z-[1000] overflow-hidden flex flex-col"
+        <div
+          className="fixed top-4 bottom-4 right-4 w-[400px] max-w-[calc(100vw-32px)] bg-card rounded-3xl shadow-2xl border border-border/50 z-[1000] overflow-hidden flex flex-col animate-in slide-in-from-right duration-300"
         >
           {/* Close */}
           <div className="absolute top-4 right-4 z-10">
