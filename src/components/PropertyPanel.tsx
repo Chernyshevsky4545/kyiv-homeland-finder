@@ -1,10 +1,14 @@
 import React from 'react';
-import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon } from 'lucide-react';
+import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart } from 'lucide-react';
 import { formatPrice, formatPriceUah } from '@/lib/format';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { type Listing } from '@/types/listing';
 import { getListingById } from '@/data/listingsService';
+import { useAuth } from '@/hooks/useAuth';
+import { useFavorites } from '@/hooks/useFavorites';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface PropertyPanelProps {
   listingId: number | null;
@@ -19,6 +23,18 @@ const CONDITION_LABELS: Record<string, string> = {
 
 export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
   const listing = listingId ? getListingById(listingId) : undefined;
+  const { user } = useAuth();
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const navigate = useNavigate();
+
+  const handleFavorite = () => {
+    if (!user) {
+      toast.info('Увійдіть щоб зберігати обрані об\'єкти');
+      navigate('/auth');
+      return;
+    }
+    if (listingId) toggleFavorite(listingId);
+  };
 
   return (
     <>
@@ -26,8 +42,18 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
         <div
           className="fixed top-4 bottom-4 right-4 w-[400px] max-w-[calc(100vw-32px)] bg-card rounded-3xl shadow-2xl border border-border/50 z-[1000] overflow-hidden flex flex-col animate-in slide-in-from-right duration-300"
         >
-          {/* Close */}
-          <div className="absolute top-4 right-4 z-10">
+          {/* Close & Favorite */}
+          <div className="absolute top-4 right-4 z-10 flex gap-2">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="rounded-full bg-card/80 backdrop-blur-md hover:bg-card border border-border/50 shadow-sm"
+              onClick={handleFavorite}
+            >
+              <Heart
+                className={`w-5 h-5 ${user && isFavorite(listingId) ? 'fill-destructive text-destructive' : 'text-foreground'}`}
+              />
+            </Button>
             <Button
               variant="secondary"
               size="icon"
