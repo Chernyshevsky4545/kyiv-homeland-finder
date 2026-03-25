@@ -8,7 +8,7 @@ export function AppHeader() {
   const navigate = useNavigate();
 
   return (
-    <div className="absolute top-4 right-4 z-[1000] flex items-center gap-2" style={{ right: '420px' }}>
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2">
       {user ? (
         <>
           <Button
@@ -18,7 +18,7 @@ export function AppHeader() {
             onClick={() => navigate('/favorites')}
           >
             <Heart className="w-4 h-4 text-destructive" />
-            <span className="hidden sm:inline">Обране</span>
+            Обране
           </Button>
           <Button
             variant="secondary"
@@ -27,6 +27,7 @@ export function AppHeader() {
             onClick={signOut}
           >
             <LogOut className="w-4 h-4" />
+            Вийти
           </Button>
         </>
       ) : (
@@ -36,8 +37,8 @@ export function AppHeader() {
           className="rounded-full bg-card/90 backdrop-blur-md border border-border/50 shadow-md hover:bg-card gap-2"
           onClick={() => navigate('/auth')}
         >
-          <LogIn className="w-4 h-4" />
-          <span className="hidden sm:inline">Увійти</span>
+          <User className="w-4 h-4" />
+          Увійти
         </Button>
       )}
     </div>
