@@ -14,11 +14,11 @@ export function AppHeader() {
           <Button
             variant="secondary"
             size="sm"
-            className="rounded-full bg-card/90 backdrop-blur-md border border-border/50 shadow-md hover:bg-card gap-2"
+            className="rounded-full bg-card backdrop-blur-md border border-border/50 shadow-lg hover:bg-card/90 gap-2 text-black font-medium px-4"
             onClick={() => navigate('/favorites')}
           >
             <Heart className="w-4 h-4 text-destructive" />
-            Обране
+            <span>Обране</span>
           </Button>
           <Button
             variant="secondary"
