@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Listing } from '@/types/listing';
+import { getListingImage } from '@/lib/listingMedia';
 
 const CONDITION_LABELS: Record<string, string> = {
   new_build: 'Новобудова',
@@ -24,12 +25,14 @@ function PropertyDetail({ listing, onClose, onRemove }: { listing: Listing; onCl
         className="bg-card border border-border/50 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Image */}
         <div className="relative h-56 bg-muted">
           <img
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=75"
+            src={getListingImage(listing)}
             alt={listing.title}
             className="w-full h-full object-cover"
+            loading="eager"
+            width={1280}
+            height={960}
           />
           <button
             onClick={onClose}
@@ -49,9 +52,7 @@ function PropertyDetail({ listing, onClose, onRemove }: { listing: Listing; onCl
           </Badge>
         </div>
 
-        {/* Content */}
         <div className="p-6 space-y-5">
-          {/* Header */}
           <div>
             <h2 className="text-2xl font-bold font-display text-foreground">{listing.title}</h2>
             <div className="flex items-center gap-1.5 text-muted-foreground mt-1">
@@ -60,13 +61,11 @@ function PropertyDetail({ listing, onClose, onRemove }: { listing: Listing; onCl
             </div>
           </div>
 
-          {/* Price */}
           <div className="bg-primary/5 border border-primary/10 rounded-xl p-4">
             <span className="text-3xl font-bold font-display text-primary">{formatPrice(listing.price)}</span>
             <span className="text-muted-foreground ml-2 text-sm">({formatPriceUah(listing.priceUah)})</span>
           </div>
 
-          {/* Key features grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-muted/50 rounded-xl p-3 text-center">
               <Maximize className="w-5 h-5 mx-auto text-muted-foreground mb-1" />
@@ -94,20 +93,17 @@ function PropertyDetail({ listing, onClose, onRemove }: { listing: Listing; onCl
             )}
           </div>
 
-          {/* Condition */}
           <div className="flex items-center gap-2">
             <Hammer className="w-4 h-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">Стан:</span>
             <Badge variant="outline">{CONDITION_LABELS[listing.condition] ?? listing.condition}</Badge>
           </div>
 
-          {/* Description */}
           <div>
             <h3 className="font-bold font-display text-foreground mb-2">Опис</h3>
             <p className="text-muted-foreground text-sm leading-relaxed">{listing.description}</p>
           </div>
 
-          {/* Meta info */}
           <div className="border-t border-border/50 pt-4 space-y-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <ExternalLink className="w-3.5 h-3.5" />
@@ -123,7 +119,6 @@ function PropertyDetail({ listing, onClose, onRemove }: { listing: Listing; onCl
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 pt-2">
             <Button variant="destructive" size="sm" className="gap-2" onClick={onRemove}>
               <Heart className="w-4 h-4" /> Видалити з обраного
@@ -181,9 +176,12 @@ export default function Favorites() {
               >
                 <div className="relative h-40 bg-muted">
                   <img
-                    src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=60"
+                    src={getListingImage(listing)}
                     alt={listing.title}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    width={1280}
+                    height={960}
                   />
                   <button
                     onClick={(e) => { e.stopPropagation(); toggleFavorite(listing.id); }}
