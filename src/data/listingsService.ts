@@ -1,8 +1,15 @@
 import { type Listing, type ListingFilters } from '@/types/listing';
 import { listings as allListings } from '@/data/listings';
 
+let deletedIdsCache: Set<number> = new Set();
+
+export function setDeletedIds(ids: number[]) {
+  deletedIdsCache = new Set(ids);
+}
+
 export function getListings(filters: ListingFilters): Listing[] {
   return allListings.filter((listing) => {
+    if (deletedIdsCache.has(listing.id)) return false;
     if (filters.type && listing.type !== filters.type) return false;
     if (filters.minPrice && listing.price < filters.minPrice) return false;
     if (filters.maxPrice && listing.price > filters.maxPrice) return false;
