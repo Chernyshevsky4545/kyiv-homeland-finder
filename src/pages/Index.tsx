@@ -1,16 +1,22 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PropertyMap } from '@/components/PropertyMap';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { PropertyPanel } from '@/components/PropertyPanel';
 import { AppHeader } from '@/components/AppHeader';
 import { type ListingFilters } from '@/types/listing';
-import { getListings } from '@/data/listingsService';
+import { getListings, setDeletedIds } from '@/data/listingsService';
+import { useDeletedListings } from '@/hooks/useAdminData';
 
 const Index = () => {
   const [filters, setFilters] = useState<ListingFilters>({});
   const [selectedListingId, setSelectedListingId] = useState<number | null>(null);
+  const { deletedIds } = useDeletedListings();
 
-  const listings = useMemo(() => getListings(filters), [filters]);
+  useEffect(() => {
+    setDeletedIds(deletedIds);
+  }, [deletedIds]);
+
+  const listings = useMemo(() => getListings(filters), [filters, deletedIds]);
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">

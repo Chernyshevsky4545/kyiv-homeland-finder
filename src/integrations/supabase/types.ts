@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      deleted_listings: {
+        Row: {
+          deleted_at: string
+          deleted_by: string | null
+          id: string
+          listing_id: number
+        }
+        Insert: {
+          deleted_at?: string
+          deleted_by?: string | null
+          id?: string
+          listing_id: number
+        }
+        Update: {
+          deleted_at?: string
+          deleted_by?: string | null
+          id?: string
+          listing_id?: number
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
