@@ -9,6 +9,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getListingImage } from '@/lib/listingMedia';
+import { ReportDialog } from './ReportDialog';
 
 interface PropertyPanelProps {
   listingId: number | null;
