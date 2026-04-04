@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart, Flag } from 'lucide-react';
 import { formatPrice, formatPriceUah } from '@/lib/format';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -9,6 +9,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getListingImage } from '@/lib/listingMedia';
+import { ReportDialog } from './ReportDialog';
 
 interface PropertyPanelProps {
   listingId: number | null;
@@ -26,6 +27,7 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
   const { user } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const navigate = useNavigate();
+  const [reportOpen, setReportOpen] = useState(false);
 
   const handleFavorite = () => {
     if (!user) {
@@ -41,6 +43,22 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
       {listingId && listing && (
         <div className="fixed top-4 bottom-4 right-4 w-[400px] max-w-[calc(100vw-32px)] bg-card rounded-3xl shadow-2xl border border-border/50 z-[1000] overflow-hidden flex flex-col animate-in slide-in-from-right duration-300">
           <div className="absolute top-4 right-4 z-10 flex gap-2">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="rounded-full bg-card/80 backdrop-blur-md hover:bg-card border border-border/50 shadow-sm"
+              onClick={() => {
+                if (!user) {
+                  toast.info("Увійдіть, щоб повідомити про оголошення");
+                  navigate('/auth');
+                  return;
+                }
+                setReportOpen(true);
+              }}
+              title="Повідомити про оголошення"
+            >
+              <Flag className="w-5 h-5 text-foreground" />
+            </Button>
             <Button
               variant="secondary"
               size="icon"
@@ -159,6 +177,7 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
           </div>
         </div>
       )}
+      <ReportDialog listingId={listingId} open={reportOpen} onOpenChange={setReportOpen} />
     </>
   );
 }
