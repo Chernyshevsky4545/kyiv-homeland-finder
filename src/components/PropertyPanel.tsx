@@ -177,6 +177,7 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
           </div>
         </div>
       )}
+      <ReportDialog listingId={listingId} open={reportOpen} onOpenChange={setReportOpen} />
     </>
   );
 }
