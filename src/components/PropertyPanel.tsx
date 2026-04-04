@@ -27,6 +27,7 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
   const { user } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const navigate = useNavigate();
+  const [reportOpen, setReportOpen] = useState(false);
 
   const handleFavorite = () => {
     if (!user) {
