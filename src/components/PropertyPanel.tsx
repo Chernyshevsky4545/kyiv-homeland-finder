@@ -47,6 +47,22 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
               variant="secondary"
               size="icon"
               className="rounded-full bg-card/80 backdrop-blur-md hover:bg-card border border-border/50 shadow-sm"
+              onClick={() => {
+                if (!user) {
+                  toast.info("Увійдіть, щоб повідомити про оголошення");
+                  navigate('/auth');
+                  return;
+                }
+                setReportOpen(true);
+              }}
+              title="Повідомити про оголошення"
+            >
+              <Flag className="w-5 h-5 text-foreground" />
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="rounded-full bg-card/80 backdrop-blur-md hover:bg-card border border-border/50 shadow-sm"
               onClick={handleFavorite}
             >
               <Heart
