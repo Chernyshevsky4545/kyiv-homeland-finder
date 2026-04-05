@@ -10,7 +10,8 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Listing } from '@/types/listing';
-import { getListingImage } from '@/lib/listingMedia';
+import { getListingImage, getListingImages } from '@/lib/listingMedia';
+import { ImageGallery } from '@/components/ImageGallery';
 
 const CONDITION_LABELS: Record<string, string> = {
   new_build: 'Новобудова',

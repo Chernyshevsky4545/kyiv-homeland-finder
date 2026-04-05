@@ -1,7 +1,8 @@
 import React from 'react';
 import { type ListingFilters } from '@/types/listing';
-import { Search, SlidersHorizontal, Map, Building, Home, FilterX } from 'lucide-react';
+import { Search, SlidersHorizontal, Map, Building, Home, FilterX, TrainFront } from 'lucide-react';
 import { Button } from './ui/button';
+import { Switch } from './ui/switch';
 
 interface SidebarProps {
   filters: ListingFilters;
@@ -122,6 +123,23 @@ export function FilterSidebar({ filters, setFilters, totalResults }: SidebarProp
                 {num}{num === 5 ? '+' : ''}
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* Near Metro */}
+        <div className="space-y-3">
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Поруч з метро</label>
+          <div className="flex items-center justify-between bg-muted/50 border border-border/50 rounded-xl p-3">
+            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+              <TrainFront className="w-4 h-4 text-primary" />
+              До 1 км від метро
+            </div>
+            <Switch
+              checked={!!filters.nearMetro}
+              onCheckedChange={(checked) =>
+                setFilters((prev) => ({ ...prev, nearMetro: checked || undefined }))
+              }
+            />
           </div>
         </div>
 
