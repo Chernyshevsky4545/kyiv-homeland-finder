@@ -1,7 +1,8 @@
 import React from 'react';
 import { type ListingFilters } from '@/types/listing';
-import { Search, SlidersHorizontal, Map, Building, Home, FilterX } from 'lucide-react';
+import { Search, SlidersHorizontal, Map, Building, Home, FilterX, TrainFront } from 'lucide-react';
 import { Button } from './ui/button';
+import { Switch } from './ui/switch';
 
 interface SidebarProps {
   filters: ListingFilters;
