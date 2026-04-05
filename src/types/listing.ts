@@ -23,6 +23,7 @@ export interface Listing {
   yearBuilt?: number | null;
   condition: ListingCondition;
   listingDate: string;
+  floorPlan?: string | null;
 }
 
 export interface ListingFilters {
@@ -31,4 +32,5 @@ export interface ListingFilters {
   maxPrice?: number;
   rooms?: number;
   district?: string;
+  nearMetro?: boolean;
 }
