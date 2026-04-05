@@ -56,13 +56,16 @@ export default function AdminPanel() {
   const deleteMutation = useMutation({
     mutationFn: async (listingId: number) => {
       if (!user) throw new Error('Not authenticated');
+      console.log('[Admin] Deleting listing:', listingId);
       const { error } = await supabase
         .from('deleted_listings')
         .insert({ listing_id: listingId, deleted_by: user.id });
       if (error) {
         if (error.code === '23505') throw new Error('Це оголошення вже видалено');
+        console.error('[Admin] Delete failed:', error);
         throw error;
       }
+      console.log('[Admin] Listing deleted successfully:', listingId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deleted-listings'] });
