@@ -46,7 +46,8 @@ export default function AdminPanel() {
         .from('listing_reports')
         .select('*')
         .order('created_at', { ascending: false });
-      if (error) throw error;
+      if (error) { console.error('[Admin] Failed to load reports:', error); throw error; }
+      console.log('[Admin] Loaded reports:', data?.length);
       return data as Report[];
     },
     enabled: isAdmin,
