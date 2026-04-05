@@ -1,5 +1,6 @@
 import { type Listing, type ListingFilters } from '@/types/listing';
 import { listings as allListings } from '@/data/listings';
+import { getNearestMetroDistance, NEAR_METRO_THRESHOLD } from '@/data/metroStations';
 
 let deletedIdsCache: Set<number> = new Set();
 
@@ -15,6 +16,10 @@ export function getListings(filters: ListingFilters): Listing[] {
     if (filters.maxPrice && listing.price > filters.maxPrice) return false;
     if (filters.rooms && listing.rooms !== filters.rooms) return false;
     if (filters.district && listing.district !== filters.district) return false;
+    if (filters.nearMetro) {
+      const { distance } = getNearestMetroDistance(listing.lat, listing.lng);
+      if (distance > NEAR_METRO_THRESHOLD) return false;
+    }
     return true;
   });
 }

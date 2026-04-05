@@ -126,6 +126,23 @@ export function FilterSidebar({ filters, setFilters, totalResults }: SidebarProp
           </div>
         </div>
 
+        {/* Near Metro */}
+        <div className="space-y-3">
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Поруч з метро</label>
+          <div className="flex items-center justify-between bg-muted/50 border border-border/50 rounded-xl p-3">
+            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+              <TrainFront className="w-4 h-4 text-primary" />
+              До 1 км від метро
+            </div>
+            <Switch
+              checked={!!filters.nearMetro}
+              onCheckedChange={(checked) =>
+                setFilters((prev) => ({ ...prev, nearMetro: checked || undefined }))
+              }
+            />
+          </div>
+        </div>
+
         {/* District */}
         <div className="space-y-3">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Район Києва</label>

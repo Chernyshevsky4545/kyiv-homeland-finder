@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart, Flag } from 'lucide-react';
+import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart, Flag, Map as MapIcon } from 'lucide-react';
 import { formatPrice, formatPriceUah } from '@/lib/format';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -8,8 +8,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getListingImage } from '@/lib/listingMedia';
+import { getListingImages, getFloorPlan } from '@/lib/listingMedia';
+import { getNearestMetroDistance } from '@/data/metroStations';
 import { ReportDialog } from './ReportDialog';
+import { ImageGallery } from './ImageGallery';
+import { FloorPlanModal } from './FloorPlanModal';
 
 interface PropertyPanelProps {
   listingId: number | null;
@@ -28,6 +31,7 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const navigate = useNavigate();
   const [reportOpen, setReportOpen] = useState(false);
+  const [floorPlanOpen, setFloorPlanOpen] = useState(false);
 
   const handleFavorite = () => {
     if (!user) {
@@ -37,6 +41,10 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
     }
     if (listingId) toggleFavorite(listingId);
   };
+
+  const images = listing ? getListingImages(listing) : [];
+  const floorPlan = listing ? getFloorPlan(listing) : null;
+  const metro = listing ? getNearestMetroDistance(listing.lat, listing.lng) : null;
 
   return (
     <>
@@ -80,25 +88,18 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-            <div className="w-full h-64 relative bg-muted shrink-0">
-              <img
-                src={getListingImage(listing)}
-                alt={listing.title}
-                className="w-full h-full object-cover"
-                loading="eager"
-                width={1280}
-                height={960}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                <Badge variant={listing.type === 'apartment' ? 'default' : 'secondary'} className="shadow-md">
+            {/* Image Gallery */}
+            <div className="relative">
+              <ImageGallery images={images} alt={listing.title} />
+              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end pointer-events-none">
+                <Badge variant={listing.type === 'apartment' ? 'default' : 'secondary'} className="shadow-md pointer-events-auto">
                   {listing.type === 'apartment' ? (
                     <><Building2 className="w-3 h-3 mr-1" /> Квартира</>
                   ) : (
                     <><Home className="w-3 h-3 mr-1" /> Будинок</>
                   )}
                 </Badge>
-                <div className="bg-card/90 backdrop-blur-md px-3 py-1.5 rounded-xl font-bold font-display text-primary shadow-lg border border-card/50">
+                <div className="bg-card/90 backdrop-blur-md px-3 py-1.5 rounded-xl font-bold font-display text-primary shadow-lg border border-card/50 pointer-events-auto">
                   {formatPrice(listing.price)}
                 </div>
               </div>
@@ -113,6 +114,17 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
                 </div>
                 <p className="text-sm text-muted-foreground mt-2 font-medium">{formatPriceUah(listing.priceUah)}</p>
               </div>
+
+              {/* Metro info */}
+              {metro && (
+                <div className="flex items-center gap-2 bg-muted/50 border border-border/50 rounded-xl px-3 py-2">
+                  <MapIcon className="w-4 h-4 text-primary shrink-0" />
+                  <span className="text-sm text-foreground">
+                    <span className="font-medium">{metro.station.name}</span>
+                    <span className="text-muted-foreground"> — {metro.distance < 1000 ? `${Math.round(metro.distance)} м` : `${(metro.distance / 1000).toFixed(1)} км`}</span>
+                  </span>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-muted/50 border border-border/50 rounded-2xl p-4 flex flex-col">
@@ -154,6 +166,27 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
                 </div>
               </div>
 
+              {/* Floor Plan */}
+              {floorPlan && (
+                <div>
+                  <h3 className="text-sm font-bold text-foreground flex items-center gap-2 mb-3 uppercase tracking-wider">
+                    <MapIcon className="w-4 h-4 text-primary" /> Планування
+                  </h3>
+                  <button
+                    onClick={() => setFloorPlanOpen(true)}
+                    className="w-full rounded-2xl overflow-hidden border border-border/50 hover:border-primary/40 transition-colors cursor-zoom-in"
+                  >
+                    <img
+                      src={floorPlan}
+                      alt={`Планування ${listing.title}`}
+                      className="w-full h-40 object-cover"
+                      loading="lazy"
+                    />
+                    <div className="text-xs text-muted-foreground text-center py-1.5 bg-muted/50">Натисніть для збільшення</div>
+                  </button>
+                </div>
+              )}
+
               <div>
                 <h3 className="text-sm font-bold text-foreground flex items-center gap-2 mb-3 uppercase tracking-wider">
                   <Info className="w-4 h-4 text-primary" /> Опис
@@ -178,6 +211,14 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
         </div>
       )}
       <ReportDialog listingId={listingId} open={reportOpen} onOpenChange={setReportOpen} />
+      {floorPlan && listing && (
+        <FloorPlanModal
+          open={floorPlanOpen}
+          onOpenChange={setFloorPlanOpen}
+          imageUrl={floorPlan}
+          title={listing.title}
+        />
+      )}
     </>
   );
 }
