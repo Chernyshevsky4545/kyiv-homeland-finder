@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart, Flag, Map as MapIcon } from 'lucide-react';
+import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart, Flag, Map as MapIcon, ExternalLink } from 'lucide-react';
 import { formatPrice, formatPriceUah } from '@/lib/format';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
