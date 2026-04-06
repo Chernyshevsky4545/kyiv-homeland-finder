@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart, Flag, Map as MapIcon } from 'lucide-react';
+import { X, Building2, Home, MapPin, Maximize, Layers, Calendar, ClipboardCheck, Info, Link as LinkIcon, Heart, Flag, Map as MapIcon, ExternalLink } from 'lucide-react';
 import { formatPrice, formatPriceUah } from '@/lib/format';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -205,6 +205,17 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
                 <p className="text-xs text-muted-foreground mt-2">
                   Оновлено: {new Date(listing.listingDate).toLocaleDateString('uk-UA')}
                 </p>
+                {listing.sourceUrl && (
+                  <a
+                    href={listing.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-primary hover:underline"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Перейти до джерела
+                  </a>
+                )}
               </div>
             </div>
           </div>

@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, ZoomControl, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, ZoomControl, useMap, Circle, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import { type Listing } from '@/types/listing';
 import { formatPrice } from '@/lib/format';
+import { metroStations, type MetroStation } from '@/data/metroStations';
 import 'leaflet/dist/leaflet.css';
 
-// Fix Leaflet's default icon path issues
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
@@ -21,6 +21,32 @@ interface MapProps {
   listings: Listing[];
   onMarkerClick: (id: number) => void;
   selectedId: number | null;
+}
+
+const METRO_LINE_COLORS: Record<string, string> = {
+  red: 'hsl(0, 75%, 50%)',
+  blue: 'hsl(220, 75%, 50%)',
+  green: 'hsl(142, 71%, 40%)',
+};
+
+function createMetroIcon(line: string) {
+  const color = METRO_LINE_COLORS[line] || '#888';
+  const html = `
+    <div style="
+      width:28px;height:28px;border-radius:50%;
+      background:${color};border:3px solid white;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 2px 8px rgba(0,0,0,0.3);
+      font-weight:900;font-size:14px;color:white;
+      font-family:'Outfit',sans-serif;
+    ">M</div>
+  `;
+  return L.divIcon({
+    html,
+    className: 'metro-marker-icon',
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+  });
 }
 
 function MapFocusHandler({ selectedId, listings }: { selectedId: number | null; listings: Listing[] }) {
@@ -67,6 +93,14 @@ export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
     });
   };
 
+  const metroIcons = useMemo(() => {
+    const map = new Map<string, L.DivIcon>();
+    for (const line of ['red', 'blue', 'green']) {
+      map.set(line, createMetroIcon(line));
+    }
+    return map;
+  }, []);
+
   return (
     <div className="w-full h-full relative bg-muted z-0">
       <MapContainer center={defaultCenter} zoom={defaultZoom} className="w-full h-full" zoomControl={false}>
@@ -76,6 +110,34 @@ export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
         />
         <ZoomControl position="bottomright" />
         <MapFocusHandler selectedId={selectedId} listings={listings} />
+
+        {/* Metro station markers with radius circles */}
+        {metroStations.map((station) => (
+          <React.Fragment key={station.name}>
+            <Circle
+              center={[station.lat, station.lng]}
+              radius={600}
+              pathOptions={{
+                color: METRO_LINE_COLORS[station.line],
+                fillColor: METRO_LINE_COLORS[station.line],
+                fillOpacity: 0.07,
+                weight: 1,
+                opacity: 0.3,
+              }}
+            />
+            <Marker
+              position={[station.lat, station.lng]}
+              icon={metroIcons.get(station.line)!}
+              zIndexOffset={2000}
+            >
+              <Tooltip direction="top" offset={[0, -16]} opacity={0.95}>
+                <span className="font-display font-bold text-sm">{station.name}</span>
+              </Tooltip>
+            </Marker>
+          </React.Fragment>
+        ))}
+
+        {/* Listing markers */}
         {listings.map((listing) => (
           <Marker
             key={listing.id}
@@ -98,6 +160,10 @@ export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-accent border-2 border-card shadow-sm"></div>
             <span className="text-xs font-medium text-muted-foreground">Будинки</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black text-primary-foreground" style={{ background: 'hsl(0, 75%, 50%)' }}>M</div>
+            <span className="text-xs font-medium text-muted-foreground">Метро</span>
           </div>
         </div>
       </div>

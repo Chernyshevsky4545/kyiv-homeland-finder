@@ -93,7 +93,8 @@
   z-index: 10;
 }
 
-.custom-marker-wrapper {
+.custom-marker-wrapper,
+.metro-marker-icon {
   background: transparent;
   border: none;
 }
