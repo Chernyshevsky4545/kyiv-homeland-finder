@@ -106,6 +106,17 @@ export function PropertyPanel({ listingId, onClose }: PropertyPanelProps) {
             </div>
 
             <div className="p-6 flex flex-col gap-6">
+              {listing.sourceUrl && (
+                <a
+                  href={listing.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline bg-primary/5 border border-primary/10 rounded-xl px-3 py-2 w-fit"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Перейти до джерела
+                </a>
+              )}
               <div>
                 <h2 className="text-xl font-bold text-foreground font-display leading-tight mb-2">{listing.title}</h2>
                 <div className="flex items-start gap-2 text-muted-foreground">
