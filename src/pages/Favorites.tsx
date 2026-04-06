@@ -105,6 +105,18 @@ function PropertyDetail({ listing, onClose, onRemove }: { listing: Listing; onCl
             <p className="text-muted-foreground text-sm leading-relaxed">{listing.description}</p>
           </div>
 
+          {listing.sourceUrl && (
+            <a
+              href={listing.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline bg-primary/5 border border-primary/10 rounded-xl px-3 py-2 w-fit"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              Перейти до джерела
+            </a>
+          )}
+
           <div className="border-t border-border/50 pt-4 space-y-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <ExternalLink className="w-3.5 h-3.5" />
