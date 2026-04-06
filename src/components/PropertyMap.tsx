@@ -136,10 +136,10 @@ export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <ZoomControl position="bottomright" />
-        <MapFocusHandler selectedId={selectedId} listings={listings} />
+        <MapFocusHandler selectedId={selectedId} listings={validListings} />
 
         {/* Metro station markers with radius circles */}
-        {metroStations.map((station) => (
+        {validMetro.map((station) => (
           <React.Fragment key={station.name}>
             <Circle
               center={[station.lat, station.lng]}
@@ -165,7 +165,7 @@ export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
         ))}
 
         {/* Listing markers */}
-        {listings.map((listing) => (
+        {validListings.map((listing) => (
           <Marker
             key={listing.id}
             position={[listing.lat, listing.lng]}
