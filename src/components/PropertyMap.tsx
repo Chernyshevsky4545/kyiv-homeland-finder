@@ -64,9 +64,36 @@ function MapFocusHandler({ selectedId, listings }: { selectedId: number | null; 
   return null;
 }
 
+const KYIV_BOUNDS = { minLat: 50.30, maxLat: 50.60, minLng: 30.20, maxLng: 30.85 };
+
+function isValidCoord(lat: number, lng: number): boolean {
+  return lat >= KYIV_BOUNDS.minLat && lat <= KYIV_BOUNDS.maxLat &&
+         lng >= KYIV_BOUNDS.minLng && lng <= KYIV_BOUNDS.maxLng;
+}
+
 export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
   const defaultCenter: [number, number] = [50.4501, 30.5234];
   const defaultZoom = 12;
+
+  const validListings = useMemo(() => {
+    return listings.filter(l => {
+      if (!isValidCoord(l.lat, l.lng)) {
+        console.warn(`[Map] Skipping listing #${l.id} — invalid coords: ${l.lat}, ${l.lng}`);
+        return false;
+      }
+      return true;
+    });
+  }, [listings]);
+
+  const validMetro = useMemo(() => {
+    return metroStations.filter(s => {
+      if (!isValidCoord(s.lat, s.lng)) {
+        console.warn(`[Map] Skipping metro "${s.name}" — invalid coords: ${s.lat}, ${s.lng}`);
+        return false;
+      }
+      return true;
+    });
+  }, []);
 
   const createCustomIcon = (listing: Listing, isSelected: boolean) => {
     const isApartment = listing.type === 'apartment';
@@ -109,10 +136,10 @@ export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <ZoomControl position="bottomright" />
-        <MapFocusHandler selectedId={selectedId} listings={listings} />
+        <MapFocusHandler selectedId={selectedId} listings={validListings} />
 
         {/* Metro station markers with radius circles */}
-        {metroStations.map((station) => (
+        {validMetro.map((station) => (
           <React.Fragment key={station.name}>
             <Circle
               center={[station.lat, station.lng]}
@@ -138,7 +165,7 @@ export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
         ))}
 
         {/* Listing markers */}
-        {listings.map((listing) => (
+        {validListings.map((listing) => (
           <Marker
             key={listing.id}
             position={[listing.lat, listing.lng]}
