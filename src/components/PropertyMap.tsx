@@ -64,13 +64,16 @@ function MapFocusHandler({ selectedId, listings }: { selectedId: number | null; 
   return null;
 }
 
-  // Kyiv bounding box for validation
-  const KYIV_BOUNDS = { minLat: 50.30, maxLat: 50.60, minLng: 30.20, maxLng: 30.85 };
+const KYIV_BOUNDS = { minLat: 50.30, maxLat: 50.60, minLng: 30.20, maxLng: 30.85 };
 
-  function isValidCoord(lat: number, lng: number): boolean {
-    return lat >= KYIV_BOUNDS.minLat && lat <= KYIV_BOUNDS.maxLat &&
-           lng >= KYIV_BOUNDS.minLng && lng <= KYIV_BOUNDS.maxLng;
-  }
+function isValidCoord(lat: number, lng: number): boolean {
+  return lat >= KYIV_BOUNDS.minLat && lat <= KYIV_BOUNDS.maxLat &&
+         lng >= KYIV_BOUNDS.minLng && lng <= KYIV_BOUNDS.maxLng;
+}
+
+export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
+  const defaultCenter: [number, number] = [50.4501, 30.5234];
+  const defaultZoom = 12;
 
   const validListings = useMemo(() => {
     return listings.filter(l => {
@@ -91,10 +94,6 @@ function MapFocusHandler({ selectedId, listings }: { selectedId: number | null; 
       return true;
     });
   }, []);
-
-export function PropertyMap({ listings, onMarkerClick, selectedId }: MapProps) {
-  const defaultCenter: [number, number] = [50.4501, 30.5234];
-  const defaultZoom = 12;
 
   const createCustomIcon = (listing: Listing, isSelected: boolean) => {
     const isApartment = listing.type === 'apartment';
