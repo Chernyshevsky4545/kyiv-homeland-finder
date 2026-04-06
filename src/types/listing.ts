@@ -24,6 +24,7 @@ export interface Listing {
   condition: ListingCondition;
   listingDate: string;
   floorPlan?: string | null;
+  sourceUrl?: string | null;
 }
 
 export interface ListingFilters {
